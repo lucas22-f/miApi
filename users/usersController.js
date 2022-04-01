@@ -1,50 +1,71 @@
 let users = require("../data");
 const {findUserById} = require("../functions");
+const { getAllUsers ,getUserbyID, addUser, deleteUserById ,editUserById } = require("./usersModel");
 
 //get all users
-const listAll = (req, res, next) => {
-    users.length ? res.status(200).json(users) : next();
+const listAll = async (req, res, next) => {
+    const data = await getAllUsers();
+    data.hasOwnProperty("error") ? res.status(500).json(data):res.status(200).json(data);
+
+
 };
 
 
 //get user by id
 
-const listOne = (req, res, next) => {
+const listOne = async (req, res, next) => {
     if (isNaN(Number(req.params.id)) || req.params.id < 1) {
         return res.status(400).json({ message: "debe ser un numero entero positivo cracken 😎" });
     }
-    const userFound = findUserById(+req.params.id,users);
-    userFound? res.status(202).json(userFound): next();
+
+    const data = await getUserbyID(+req.params.id);
+    if(data.hasOwnProperty("error"))return res.status(500).json(data)
+    data.length ? res.status(200).json(data) : next()
 
 };
 
-const addOne = (req, res) => {
-    
-    const { name, username, email } = req.body;
-    
-    if (!name ||!username ||(!email && !name === "") ||username === "" ||email === ""){
-        res.status(400).json({ message: "all fields required" });
+const addOne = async (req, res) => {
 
-    } else {
-        
-        res.status(200).json({message:"resourse created"});
-        users.push({ ...req.body });
+    const user = {
+        name:req.body.name,
+        userName:req.body.userName,
+        email:req.body.email
     }
+
+   const data = await addUser(user)
+
+   data.hasOwnProperty("error") ? res.status(500).json(data) : res.status(201).json(user);
+
+   
 };
 
 //delete user by id
 
-const removeOne = (req, res, next) => {
+const removeOne = async(req, res, next) => {
     if (isNaN(Number(req.params.id)) || req.params.id < 1) {
         return res.status(400).json({ message: "ID debe ser un número entero positivo mayor que 0" });
     }
-    if (findUserById(+req.params.id,users)) {
-        let filteredArr = users.filter((user) => user.id !== Number(req.params.id));
-        users = filteredArr;
-        res.status(200).json({ message: "Resource deleted" });
-    } else {
-        next();
-    }
+ 
+    const data = await deleteUserById(+req.params.id)
+    
+    if(data.hasOwnProperty("error")) return res.status(500).json(data)
+    data.affectedRows ?  res.status(204).end():next();
+      
+
 };
 
-module.exports ={listAll,listOne,addOne,removeOne};
+
+const editOne = async (req,res,next) =>{
+    if (isNaN(Number(req.params.id)) || req.params.id < 1) {
+        return res.status(400).json({ message: "ID debe ser un número entero positivo mayor que 0" });
+    }
+
+
+    const data = await editUserById(+req.params.id,req.body)
+    if(data.hasOwnProperty("error")) return res.status(500).json(data)
+    data.affectedRows ? res.status(200).json(req.body) : next() ;
+
+
+
+}
+module.exports ={listAll,listOne,addOne,removeOne , editOne};
