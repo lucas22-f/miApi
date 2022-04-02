@@ -5,6 +5,8 @@ const app = express();
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 require("dotenv").config();
+app.use(express.static("storage"));
+
 //welcome end point
 app.get("/", (req, res) => {
     res.send(`<h1> Hola estamos en mi API con express y NODE </h1>`);
@@ -23,7 +25,7 @@ app.listen(port, (err) => {
     err? console.log("error"): console.log(`sv corriendo en http://localhost:${port}`);
 });
 //catch error (404)
-app.use((req, res) => {
+app.use((req, res, next) => {
 
     let error = new Error("Resourse not found")
     error.status = 404;

@@ -10,7 +10,7 @@ const connection = mysql.createConnection({
 })
 
 connection.connect((err)=>{
-    err?console.warn("no conectado",{"error":err.message}):console.log("conneccion establecida");
+    err?console.warn("no conectado",{"error":err.message}):console.log("Conexión establecida");
 })
 
 

@@ -83,7 +83,21 @@ const editUserById = async(id,user) =>{
 
 }
 
+const loginUser = async(email) =>{
+
+    const query = `SELECT * FROM users WHERE email = "${email}" LIMIT 1`
+
+    try {
+        return await connection.query(query);
+    } catch (error) {
+        error.message = error.code
+        return error;
+    }
+
+
+}
 
 
 
-module.exports = {getAllUsers ,getUserbyID, addUser , deleteUserById, editUserById} 
+
+module.exports = {getAllUsers ,getUserbyID, addUser , deleteUserById, editUserById, loginUser} 
