@@ -2,7 +2,7 @@ const router = require("express").Router();
 let users = require("../data");
 
 const {addOne,listOne,listAll,removeOne, editOne} = require("./usersController");
-
+const {validatorCreateUser} = require("../validators/users");
 //get all users
 router.get("/",listAll)
 
@@ -10,7 +10,7 @@ router.get("/",listAll)
 router.get("/:id",listOne)
 
 //post user
-router.post("/",addOne)
+router.post("/", validatorCreateUser ,addOne)
 
 //delete user by id
 router.delete("/:id",removeOne)

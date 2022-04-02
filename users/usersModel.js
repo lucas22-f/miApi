@@ -10,7 +10,8 @@ const getAllUsers = async() =>{
 
         
     } catch (error) {
-        return {"error" : error.code} 
+        error.message = error.code
+        return error
     }
 
     
@@ -27,7 +28,8 @@ const getUserbyID = async (id) =>{
 
         
     } catch (error) {
-        return {"error" : error.code} 
+        error.message = error.code
+        return error
     }
 
 
@@ -43,7 +45,8 @@ const addUser = async (user) =>{
 
         
     } catch (error) {
-        return {"error" : error.code} 
+        error.message = error.code
+        return error
     }
 }
 
@@ -56,7 +59,8 @@ const deleteUserById = async(id) =>{
 
         
     } catch (error) {
-        return {"error" : error.code} 
+        error.message = error.code
+        return error
     }
 
 
@@ -72,7 +76,8 @@ const editUserById = async(id,user) =>{
 
         
     } catch (error) {
-        return {"error" : error.code} 
+        error.message = error.code
+        return error
     }
 
 

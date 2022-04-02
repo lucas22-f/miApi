@@ -1,69 +1,58 @@
 let users = require("../data");
 const {findUserById} = require("../functions");
 const { getAllUsers ,getUserbyID, addUser, deleteUserById ,editUserById } = require("./usersModel");
-
+const {notNumber} = require("../utils/userFunctions");
+const { end } = require("../db/config");
 //get all users
 const listAll = async (req, res, next) => {
     const data = await getAllUsers();
-    data.hasOwnProperty("error") ? res.status(500).json(data):res.status(200).json(data);
-
-
+    if(data instanceof Error) return next(data)
+    data.length ? res.status(200).json(data) : next();
 };
 
 
 //get user by id
 
 const listOne = async (req, res, next) => {
-    if (isNaN(Number(req.params.id)) || req.params.id < 1) {
-        return res.status(400).json({ message: "debe ser un numero entero positivo cracken 😎" });
-    }
+    
+    if(notNumber(req.params.id,next)) return
 
     const data = await getUserbyID(+req.params.id);
-    if(data.hasOwnProperty("error"))return res.status(500).json(data)
-    data.length ? res.status(200).json(data) : next()
+    if(data instanceof Error) return next(data)
+    data.length ? res.status(200).json(data) : next();
 
 };
 
-const addOne = async (req, res) => {
+const addOne = async (req, res,next ) => {
 
-    const user = {
-        name:req.body.name,
-        userName:req.body.userName,
-        email:req.body.email
-    }
-
-   const data = await addUser(user)
-
-   data.hasOwnProperty("error") ? res.status(500).json(data) : res.status(201).json(user);
-
+   const data = await addUser(req.body)
+   data instanceof Error ? next (data) : res.status(201).json(req.body);
    
 };
 
 //delete user by id
 
 const removeOne = async(req, res, next) => {
-    if (isNaN(Number(req.params.id)) || req.params.id < 1) {
-        return res.status(400).json({ message: "ID debe ser un número entero positivo mayor que 0" });
-    }
+
+    if(notNumber(req.params.id,next)) return
  
     const data = await deleteUserById(+req.params.id)
     
-    if(data.hasOwnProperty("error")) return res.status(500).json(data)
-    data.affectedRows ?  res.status(204).end():next();
+    if(data instanceof Error) return next(data)
+    !data.length ? next() : res.status(200).json(data);
       
 
 };
 
 
 const editOne = async (req,res,next) =>{
-    if (isNaN(Number(req.params.id)) || req.params.id < 1) {
-        return res.status(400).json({ message: "ID debe ser un número entero positivo mayor que 0" });
-    }
+
+    if(notNumber(req.params.id,next)) return
 
 
     const data = await editUserById(+req.params.id,req.body)
-    if(data.hasOwnProperty("error")) return res.status(500).json(data)
-    data.affectedRows ? res.status(200).json(req.body) : next() ;
+    if(data instanceof Error) return next(data)
+    data.affectedRows ? res.status(200).json(req.body) : next();
 
 
 

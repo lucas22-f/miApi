@@ -22,7 +22,23 @@ app.use("/users", require("./users/usersRoutes"));
 app.listen(port, (err) => {
     err? console.log("error"): console.log(`sv corriendo en http://localhost:${port}`);
 });
-
+//catch error (404)
 app.use((req, res) => {
-    res.status(404).json({ message: "Resourse Not Found" });
+
+    let error = new Error("Resourse not found")
+    error.status = 404;
+    next(error);
 });
+
+
+//Error Handler
+
+app.use((error,req,res,next)=>{
+    if(!error.status){
+        error.status = 500;
+    }
+
+    res.status(error.status).json({status : error.status , message: error.message})
+
+
+})
