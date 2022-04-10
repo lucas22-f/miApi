@@ -2,7 +2,7 @@ const router = require("express").Router();
 let users = require("../data");
 
 const {register,listOne,listAll,removeOne, editOne , login} = require("./usersController");
-const {validatorCreateUser} = require("../validators/users");
+const {validatorCreateUser, validatorEditUser} = require("../validators/users");
 const uploadFile = require("../utils/handleImg");
 //get all users
 router.get("/",listAll)
@@ -11,7 +11,7 @@ router.get("/",listAll)
 router.get("/:id",listOne)
 
 //post user
-router.post("/register" ,uploadFile.single("file"),register)
+router.post("/register" ,uploadFile.single("file"),validatorCreateUser, register ) 
 
 //post user
 router.post("/login", login)
@@ -21,6 +21,6 @@ router.delete("/:id",removeOne)
 
 
 //patch user by id
-router.patch("/:id",editOne);
+router.patch("/:id",uploadFile.single("file"),validatorEditUser, editOne);
 
 module.exports = router;
