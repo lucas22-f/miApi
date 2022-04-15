@@ -13,8 +13,10 @@ app.get("/", (req, res) => {
 });
 
 
-
+//rutas users
 app.use("/users", require("./users/usersRoutes"));
+//rutas posts auth
+app.use("/posts",require("./posts/postRoute"));
 
 
 

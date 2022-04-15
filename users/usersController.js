@@ -4,6 +4,8 @@ const { getAllUsers ,getUserbyID, addUser, deleteUserById ,editUserById ,loginUs
 const {notNumber} = require("../utils/userFunctions");
 const { encrypt ,compare } = require("../utils/handlePassword");
 const {matchedData} = require("express-validator");
+const {tokenSing,tokenVerify} = require("../utils/handleJWT");
+const { use } = require("bcrypt/promises");
 const public_url = process.env.public_url;
 
 
@@ -51,14 +53,25 @@ const listOne = async (req, res, next) => {
 
 };
 
-//register 
+//register  
 const register = async (req, res, next) => {
 
     const cleanBody = matchedData(req);
-     const image =`${public_url}/${req.file.filename}`
-     const password = await encrypt(req.body.password);
-     const data = await addUser({ ...cleanBody, password,image});
-     data instanceof Error ? next(data) : res.sendStatus(201)
+    const image =`${public_url}/${req.file.filename}`
+    const password = await encrypt(req.body.password);
+    
+    const user  = {
+        name:cleanBody.name,
+        email:cleanBody.email,
+    }
+    const token = await tokenSing(user,"1h");
+    
+    const data = await addUser({ ...cleanBody, password,image});
+    if( data instanceof Error) return next(data)   
+
+    res.status(201).json({message:"User Created", JWT : token});
+    
+    
    
 };
 
@@ -68,7 +81,14 @@ const login = async(req,res,next) =>{
     const data = await loginUser(req.body.email);
     if(!data.length) return next();
     if( await compare(req.body.password , data[0].password)){
-        res.sendStatus(200) 
+
+        const user  = {
+            name:data[0].name,
+            email:data[0].email,
+        }
+        const token = await tokenSing(user,"1h");
+        res.status(200).json({message:"User Logged", JWT : token});
+
     } else{
         let error = new Error("Unauthorized")
         error.status = 401;

@@ -19,7 +19,6 @@ router.post("/login", login)
 //delete user by id
 router.delete("/:id",removeOne)
 
-
 //patch user by id
 router.patch("/:id",uploadFile.single("file"),validatorEditUser, editOne);
 
