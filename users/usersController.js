@@ -61,6 +61,7 @@ const register = async (req, res, next) => {
     const password = await encrypt(req.body.password);
     
     const user  = {
+        id:cleanBody.id,
         name:cleanBody.name,
         email:cleanBody.email,
     }
@@ -83,6 +84,7 @@ const login = async(req,res,next) =>{
     if( await compare(req.body.password , data[0].password)){
 
         const user  = {
+            id:data[0].id,
             name:data[0].name,
             email:data[0].email,
         }
