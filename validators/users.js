@@ -56,6 +56,30 @@ const validatorEditUser = [
 
 
 ]
+const validatorResetPasswod = [
+    check("password1")
+    .exists()
+    .notEmpty().withMessage("este campo no puede estar vacio")
+    .isLength({min:8,max:15})
+    .trim(),
+    check("password2")
+    .custom(async(password2,{req})=>{
+        const password1 = req.body.password1
+        if(password1!==password2){
+            throw new Error ("password tienen que ser identicos");
+        }
+    }),
+    (req,res,next) =>{
+        const token = req.params.token
+        errors = validationResult(req)
+        if(!errors.isEmpty()){
+            const arrWarnings = errors.array()
+            res.render("reset",{arrWarnings,token})
 
+        }else{
+            next()
+        }
+    }
+]
 
-module.exports = {validatorCreateUser,validatorEditUser};
+module.exports = {validatorCreateUser,validatorEditUser,validatorResetPasswod};

@@ -6,6 +6,7 @@ const { encrypt ,compare } = require("../utils/handlePassword");
 const {matchedData} = require("express-validator");
 const {tokenSing,tokenVerify} = require("../utils/handleJWT");
 const { use } = require("bcrypt/promises");
+const nodemailer = require("nodemailer");
 const public_url = process.env.public_url;
 
 
@@ -75,6 +76,65 @@ const register = async (req, res, next) => {
     
    
 };
+const transport = nodemailer.createTransport({
+    host: "smtp.mailtrap.io",
+    port: 2525,
+    auth: {
+      user: "219b0937bbfed7",
+      pass: "001643c64936c4"
+    }
+  });
+
+const forgot = async(req,res,next) =>{
+
+
+    const data = await loginUser(req.body.email);
+    if(!data.length) return next();
+    const user ={
+        id:data[0].id,
+        name:data[0].name,
+        email:data[0].email
+    }
+    const token = await tokenSing(user,"15m");
+    const link = `${public_url}/users/reset/${token}`
+
+    let mailDetails = {
+        from:"techsupport@lukin.com",
+        to:user.email,
+        subject:"password recovery",
+        html:`<h2> Reset de contraseña</h2> 
+        <p> restablece tu contraseña, hace click en el siguiente link: <a href="${link}"> click to recover your password "</a>`
+    
+    }
+
+    transport.sendMail(mailDetails,(err,data)=>{
+        if(err){
+            err.message = "Internal Server Error"
+            res.next(err)
+        }else{
+            res.status(200).json({message:`Hola! ${user.name} te mandamos un mail con las instrucciones para reestablecer tu contraseña a ${user.email}`})
+        }
+    })
+
+
+}
+//FORM -> reset password
+
+const reset = async(req,res,next)=> {
+
+    const {token} = req.params;
+    const tokenStatus = await tokenVerify(token);
+    if(tokenStatus instanceof Error){
+        res.send(tokenStatus);
+    }else{
+        res.render("reset",{tokenStatus , token});
+    }
+
+}
+
+const saveNewPass = () => {};
+
+
 
 //login
 const login = async(req,res,next) =>{
@@ -128,4 +188,4 @@ const editOne = async (req,res,next) =>{
 
 
 }
-module.exports ={listAll,listOne, register , removeOne , editOne , login};
+module.exports ={listAll,listOne, register , removeOne , editOne , login , forgot , reset , saveNewPass};

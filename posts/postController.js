@@ -1,4 +1,5 @@
 const { matchedData } = require("express-validator");
+const { loginUser } = require("../users/usersModel");
 const { getAllposts,addNewPost, getPostWith } = require("./postModel")
 
 

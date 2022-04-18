@@ -6,6 +6,18 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 require("dotenv").config();
 app.use(express.static("storage"));
+const hbs = require("express-handlebars");
+const path = require("path");
+
+//bootstrap config
+app.use("/css",express.static(path.join(__dirname,"node_modules/bootstrap/dist/css")));
+app.use("/js",express.static(path.join(__dirname,"node_modules/bootstrap/dist/js")));
+
+//hbs config
+app.set("view engine","hbs");
+app.set("views",path.join(__dirname,"views"));
+app.engine("hbs",hbs.engine({extname: "hbs"}));
+
 
 //welcome end point
 app.get("/", (req, res) => {
