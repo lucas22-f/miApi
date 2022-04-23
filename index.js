@@ -31,7 +31,7 @@ app.use("/posts",require("./posts/postRoute"));
 
 
 
-
+const PORT =3000;
 
 
 app.listen(PORT, (err) => {
