@@ -60,13 +60,15 @@ const validatorResetPasswod = [
     check("password1")
     .exists()
     .notEmpty().withMessage("este campo no puede estar vacio")
-    .isLength({min:8,max:15})
+    .isLength({min:8,max:15}).withMessage("caracteres minimos 8 maximos 15")
     .trim(),
     check("password2")
     .custom(async(password2,{req})=>{
+        
         const password1 = req.body.password1
+        console.log(password1)
         if(password1!==password2){
-            throw new Error ("password tienen que ser identicos");
+            throw new Error ("Las contraseñas tienen que ser identicas");
         }
     }),
     (req,res,next) =>{

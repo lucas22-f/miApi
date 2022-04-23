@@ -132,7 +132,15 @@ const reset = async(req,res,next)=> {
 
 }
 
-const saveNewPass = () => {};
+const saveNewPass = async(req,res,next) => {
+    const {token} = req.params;
+    const tokenStatus = await tokenVerify(token);
+    if(tokenStatus instanceof Error) return res.send(tokenStatus);
+    const newPassword = await encrypt(req.body.password1);
+    const data = await editUserById(tokenStatus.id,{password: newPassword});
+    data instanceof Error ? next(data) : res.status(200).json({message: "Contraseña correctamente actualizada"})
+
+};
 
 
 
