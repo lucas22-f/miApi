@@ -1,5 +1,4 @@
 const express = require("express");
-const port = 3000;
 require("./db/config");
 const app = express();
 app.use(express.json())
@@ -35,8 +34,8 @@ app.use("/posts",require("./posts/postRoute"));
 
 
 
-app.listen(port, (err) => {
-    err? console.log("error"): console.log(`sv corriendo en http://localhost:${port}`);
+app.listen(PORT, (err) => {
+    err? console.log("error"): console.log(`sv corriendo en http://localhost:${PORT}`);
 });
 //catch error (404)
 app.use((req, res, next) => {
