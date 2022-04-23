@@ -9,7 +9,7 @@ const connection = mysql.createConnection({
     pass : "224ccf7a",
 })
 
-connection.connect((err)=>{
+connection.pool((err)=>{
     err?console.warn("no conectado",{"error":err.message}):console.log(`"Conexión establecida"`);
 })
 
