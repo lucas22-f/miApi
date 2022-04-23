@@ -3,10 +3,10 @@ const util = require("util");
 require("dotenv").config();
 
 const connection = mysql.createConnection({
-    host: process.env.db_host,
-    database: process.env.db_name,
-    user : process.env.db_user,
-    pass : process.env.db_pass,
+    host: "us-cdbr-east-05.cleardb.net",
+    database: "heroku_eb9ce2a7c6fee52",
+    user : "bdf2116239405c",
+    pass : "224ccf7a",
 })
 
 connection.connect((err)=>{
