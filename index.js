@@ -30,12 +30,8 @@ app.use("/users", require("./users/usersRoutes"));
 app.use("/posts",require("./posts/postRoute"));
 
 
-
-const PORT =3000;
-
-
-app.listen(PORT, (err) => {
-    err? console.log("error"): console.log(`sv corriendo en http://localhost:${PORT}`);
+app.listen(process.env.PORT || 3030,(err) => {
+    err? console.log("error"): console.log(`sv corriendo en http://localhost:${$PORT}`);
 });
 //catch error (404)
 app.use((req, res, next) => {
