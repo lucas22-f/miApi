@@ -31,7 +31,7 @@ app.use("/posts",require("./posts/postRoute"));
 
 
 app.listen(process.env.PORT || 3030,(err) => {
-    err? console.log("error"): console.log(`sv corriendo en http://localhost:${$PORT}`);
+    err? console.log("error"): console.log(`sv corriendo en http://localhost:${process.env.PORT }`);
 });
 //catch error (404)
 app.use((req, res, next) => {
