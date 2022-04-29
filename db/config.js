@@ -3,10 +3,11 @@ const util = require("util");
 require("dotenv").config();
 
 const connection = mysql.createPool({
-    host: "us-cdbr-east-05.cleardb.net",
-    database: "heroku_eb9ce2a7c6fee52",
-    user : "bdf2116239405c",
-    pass : "224ccf7a",
+
+    user : process.env.db_user,
+    pass : process.env.db_pass,
+    host: process.env.db_host,
+    database: process.env.db_name
 })
 
 connection.getConnection((err)=>{
